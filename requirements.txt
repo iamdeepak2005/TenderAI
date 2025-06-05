@@ -1,5 +1,6 @@
-tavily-python 
+tavily-python
 fastapi
 uvicorn
 pydantic
 selenium
+serpapi
