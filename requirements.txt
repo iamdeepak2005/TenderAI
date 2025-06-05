@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 tavily-python 
 fastapi
 uvicorn
 pydantic
+=======
+selenium
+>>>>>>> 35fc8551c85545aa0cb8154a5385fa172c16849a
