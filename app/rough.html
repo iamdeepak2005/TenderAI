@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tender A.I+ Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-light: #836FFF;
+            --secondary: #4F46E5;
+            --text-dark: #111827;
+            --text-medium: #374151;
+            --text-light: #6B7280;
+            --text-lighter: #9CA3AF;
+            --bg-light: #f8f9fb;
+            --bg-lighter: #f1f3f8;
+            --border: #E5E7EB;
+            --hover-bg: #F3F4F6;
+            --applied-bg: #F0F7FF;
+            --applied-border: #B8D9FF;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --overlay-bg: rgba(0, 0, 0, 0.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(to bottom, #f8f9fb, #f1f3f8);
+            min-height: 100vh;
+            display: flex;
+            color: var(--text-medium);
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: white;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.04);
+            border-radius: 16px;
+            padding: 28px 24px;
+            margin: 32px;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 64px);
+            transition: all 0.3s ease;
+        }
+        
+        .logo {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            letter-spacing: -0.3px;
+            color: var(--text-dark);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .new-request-btn {
+            width: 100%;
+            height: 44px;
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 32px;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .new-request-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(108, 99, 255, 0.2);
+        }
+        
+        /* Filter Section */
+        .filter-section {
+            background: var(--bg-lighter);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .filter-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-group {
+            margin-bottom: 16px;
+        }
+        
+        .filter-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-medium);
+            margin-bottom: 6px;
+        }
+        
+        .filter-select, .filter-input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: white;
+            font-size: 14px;
+            color: var(--text-medium);
+            outline: none;
+        }
+        
+        .filter-select:focus, .filter-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+        }
+        
+        .date-range {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .date-range input {
+            flex: 1;
+        }
+        
+        .filter-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .filter-btn {
+            flex: 1;
+            padding: 8px 0;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        
+        .apply-btn {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .reset-btn {
+            background: white;
+            color: var(--text-light);
+            border: 1px solid var(--border);
+        }
+        
+        .conversation-list {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        
+        .applied-tender {
+            padding: 12px;
+            font-size: 13px;
+            background: var(--applied-bg);
+            border: 1px solid var(--applied-border);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .applied-tender:hover {
+            background: #E1EFFF;
+        }
+        
+        .applied-tender-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .applied-tender-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-light);
+            font-size: 12px;
+        }
+        
+        .applied-tender-status {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        
+        .status-submitted {
+            background: #E6F6EC;
+            color: #067647;
+        }
+        
+        .status-review {
+            background: #FFF8E6;
+            color: #B95000;
+        }
+        
+        .status-won {
+            background: #E6F0FF;
+            color: #2D5BFF;
+        }
+        
+        .section-title {
+            font-size: 12px;
+            color: var(--text-lighter);
+            margin: 24px 0 12px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .profile-section {
+            display: flex;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 20px;
+        }
+        
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--hover-bg);
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-medium);
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+            height: calc(100vh - 64px);
+            margin: 32px 32px 32px 0;
+        }
+        
+        .greeting {
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-dark);
+            text-align: center;
+            margin: 48px 0 64px;
+        }
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0px 12px 40px rgba(0,0,0,0.08);
+        }
+        
+        .card-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .card-title::after {
+            content: "→";
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .card-desc {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+        
+        /* Tender Cards Styles */
+        .tenders-section {
+            display: none;
+            margin-bottom: 48px;
+        }
+        
+        .section-heading {
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-heading::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 20px;
+            background: var(--primary);
+            margin-right: 12px;
+            border-radius: 2px;
+        }
+        
+        .tenders-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .tender-card {
+            background: white;
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.2s ease;
+        }
+        
+        .tender-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 8px 30px rgba(0,0,0,0.08);
+        }
+        
+        .tender-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .tender-meta {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        .tender-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .tender-meta svg {
+            width: 14px;
+            height: 14px;
+        }
+        
+        .tender-desc {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+        
+        .tender-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .tender-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .primary-btn {
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+        }
+        
+        .secondary-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-light);
+        }
+        
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary);
+            font-weight: 500;
+            margin-bottom: 24px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .back-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .chat-input-container {
+            max-width: 720px;
+            margin: 0 auto;
+            position: relative;
+            margin-top: 48px;
+        }
+        
+        .chat-input {
+            width: 100%;
+            height: 48px;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            padding: 0 60px 0 20px;
+            font-size: 15px;
+            color: var(--text-light);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        
+        .chat-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+        }
+        
+        .send-btn {
+            position: absolute;
+            right: 4px;
+            top: 4px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .send-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Tender Detail Overlay */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--overlay-bg);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .detail-container {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            position: relative;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-lighter);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .close-btn:hover {
+            background: var(--hover-bg);
+        }
+        
+        .detail-header {
+            padding-right: 40px;
+            margin-bottom: 24px;
+        }
+        
+        .detail-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+        
+        .detail-meta {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .detail-meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .detail-meta-label {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+        
+        .detail-meta-value {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .detail-content {
+            margin: 24px 0;
+            line-height: 1.6;
+        }
+        
+        .detail-section {
+            margin-bottom: 24px;
+        }
+        
+        .detail-section-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .detail-section-content {
+            font-size: 15px;
+            color: var(--text-medium);
+            line-height: 1.6;
+        }
+        
+        .detail-actions {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+        }
+        
+        .detail-btn {
+            padding: 10px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Poppins', sans-serif;
+            border: none;
+        }
+        
+        .apply-btn-large {
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+        }
+        
+        .save-btn-large {
+            background: white;
+            color: var(--text-light);
+            border: 1px solid var(--border);
+        }
+        
+        /* User Details Section */
+        .user-details {
+            background: var(--bg-lighter);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 24px;
+            display: none;
+        }
+        
+        .user-details-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+        
+        .user-detail-row {
+            display: flex;
+            margin-bottom: 12px;
+        }
+        
+        .user-detail-label {
+            width: 120px;
+            font-weight: 500;
+            color: var(--text-medium);
+        }
+        
+        .user-detail-value {
+            flex: 1;
+            color: var(--text-dark);
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 1024px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .tenders-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: calc(100% - 32px);
+                margin: 16px;
+                height: auto;
+            }
+            
+            .main-content {
+                margin: 16px;
+                padding: 16px;
+                height: auto;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .greeting {
+                margin: 32px 0;
+                font-size: 20px;
+            }
+            
+            .detail-container {
+                width: 95%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Left Sidebar -->
+    <div class="sidebar">
+        <div class="logo">Tender A.I+</div>
+        <button class="new-request-btn">+ New Request</button>
+        
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-title">
+                <i class="fas fa-filter"></i>
+                Filters
+            </div>
+            
+            <div class="filter-group">
+                <label for="categoryFilter">Category</label>
+                <select class="filter-select" id="categoryFilter">
+                    <option>All Categories</option>
+                    <option>Construction</option>
+                    <option>IT Services</option>
+                    <option>Government</option>
+                    <option>Healthcare</option>
+                    <option>Education</option>
+                    <option>Transport</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="statusFilter">Status</label>
+                <select class="filter-select" id="statusFilter">
+                    <option>All Statuses</option>
+                    <option>Open</option>
+                    <option>Under Review</option>
+                    <option>Closed</option>
+                    <option>Awarded</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="dateRange">Date Range</label>
+                <div class="date-range">
+                    <input type="date" class="filter-input" placeholder="From">
+                    <input type="date" class="filter-input" placeholder="To">
+                </div>
+            </div>
+            
+            <div class="filter-actions">
+                <button class="filter-btn apply-btn">Apply Filters</button>
+                <button class="filter-btn reset-btn">Reset</button>
+            </div>
+        </div>
+        
+        <div class="conversation-list">
+            <div class="section-title">Applied Tenders</div>
+            
+            <div class="applied-tender">
+                <div class="applied-tender-title">New Hospital Construction - Phase 2</div>
+                <div class="applied-tender-meta">
+                    <span>Submitted: 12 Jul 2023</span>
+                    <span>$45M</span>
+                </div>
+                <div class="applied-tender-status status-submitted">Submitted</div>
+            </div>
+            
+            <div class="applied-tender">
+                <div class="applied-tender-title">Enterprise Cloud Migration</div>
+                <div class="applied-tender-meta">
+                    <span>Submitted: 05 Jul 2023</span>
+                    <span>3-year</span>
+                </div>
+                <div class="applied-tender-status status-review">Under Review</div>
+            </div>
+            
+            <div class="applied-tender">
+                <div class="applied-tender-title">Regional School Renovation</div>
+                <div class="applied-tender-meta">
+                    <span>Submitted: 28 Jun 2023</span>
+                    <span>$8.2M</span>
+                </div>
+                <div class="applied-tender-status status-won">Contract Awarded</div>
+            </div>
+            
+            <div class="applied-tender">
+                <div class="applied-tender-title">Cybersecurity Framework</div>
+                <div class="applied-tender-meta">
+                    <span>Submitted: 15 Jun 2023</span>
+                    <span>6-month</span>
+                </div>
+                <div class="applied-tender-status status-review">Evaluation</div>
+            </div>
+        </div>
+        
+        <div class="profile-section">
+            <div class="avatar">JD</div>
+            <div class="user-name">John Doe</div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1 class="greeting">Hello! How can Tender A.I+ assist with tenders today?</h1>
+        
+        <!-- Info Cards Grid (Default View) -->
+        <div class="cards-grid" id="infoCards">
+            <div class="card" data-category="construction">
+                <div class="card-title">Construction</div>
+                <div class="card-desc">Browse and analyze construction tenders and RFPs.</div>
+            </div>
+            <div class="card" data-category="it">
+                <div class="card-title">IT Services</div>
+                <div class="card-desc">Explore IT service contracts and technology bids.</div>
+            </div>
+            <div class="card" data-category="government">
+                <div class="card-title">Government</div>
+                <div class="card-desc">Public sector contracts and procurement opportunities.</div>
+            </div>
+            <div class="card" data-category="healthcare">
+                <div class="card-title">Healthcare</div>
+                <div class="card-desc">Medical equipment and service provider contracts.</div>
+            </div>
+            <div class="card" data-category="education">
+                <div class="card-title">Education</div>
+                <div class="card-desc">School and university procurement opportunities.</div>
+            </div>
+            <div class="card" data-category="transport">
+                <div class="card-title">Transport</div>
+                <div class="card-desc">Infrastructure and logistics service contracts.</div>
+            </div>
+        </div>
+        
+        <!-- Tenders Sections (Hidden by default) -->
+        <div class="tenders-section" id="constructionTenders">
+            <div class="back-btn" onclick="showInfoCards()">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Back to categories
+            </div>
+            <h2 class="section-heading">Construction Tenders</h2>
+            <div class="tenders-grid">
+                <div class="tender-card">
+                    <h3 class="tender-title">New Hospital Construction - Phase 2</h3>
+                    <div class="tender-meta">
+                        <span>
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 8V12L15 15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Closes: 15 Aug 2023
+                        </span>
+                        <span>
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M6 20C6 17.7909 7.79086 16 10 16H14C16.2091 16 18 17.7909 18 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Ministry of Health
+                        </span>
+                    </div>
+                    <p class="tender-desc">Construction of new 200-bed hospital facility including all civil works, MEP installations, and finishing works. Budget: $45M.</p>
+                    <div class="tender-actions">
+                        <button class="tender-btn primary-btn" onclick="showTenderDetail('New Hospital Construction - Phase 2')">View Details</button>
+                        <button class="tender-btn secondary-btn">Save</button>
+                    </div>
+                </div>
+                <div class="tender-card">
+                    <h3 class="tender-title">Highway Expansion Project</h3>
+                    <div class="tender-meta">
+                        <span>
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 8V12L15 15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Closes: 22 Sep 2023
+                        </span>
+                        <span>
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M6 20C6 17.7909 7.79086 16 10 16H14C16.2091 16 18 17.7909 18 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Transport Authority
+                        </span>
+                    </div>
+                    <p class="tender-desc">Expansion of 25km highway section to 6 lanes, including bridges and interchanges. Budget: $120M. Prequalification required.</p>
+                    <div class="tender-actions">
+                        <button class="tender-btn primary-btn" onclick="showTenderDetail('Highway Expansion Project')">View Details</button>
+                        <button class="tender-btn secondary-btn">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tenders-section" id="itTenders">
+            <div class="back-btn" onclick="showInfoCards()">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Back to categories
+            </div>
+            <h2 class="section-heading">IT Services Tenders</h2>
+            <div class="tenders-grid">
+                <div class="tender-card">
+                    <h3 class="tender-title">Enterprise Cloud Migration</h3>
+                    <div class="tender-meta">
+                        <span>
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 8V12L15 15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Closes: 05 Sep 2023
+                        </span>
+                        <span>
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M6 20C6 17.7909 7.79086 16 10 16H14C16.2091 16 18 17.7909 18 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            National Bank
+                        </span>
+                    </div>
+                    <p class="tender-desc">Migration of core banking systems to cloud infrastructure with 24/7 support requirements. 3-year contract.</p>
+                    <div class="tender-actions">
+                        <button class="tender-btn primary-btn" onclick="showTenderDetail('Enterprise Cloud Migration')">View Details</button>
+                        <button class="tender-btn secondary-btn">Save</button>
+                    </div>
+                </div>
+                <div class="tender-card">
+                    <h3 class="tender-title">Cybersecurity Framework Implementation</h3>
+                    <div class="tender-meta">
+                        <span>
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 8V12L15 15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Closes: 18 Aug 2023
+                        </span>
+                        <span>
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M6 20C6 17.7909 7.79086 16 10 16H14C16.2091 16 18 17.7909 18 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Energy Ministry
+                        </span>
+                    </div>
+                    <p class="tender-desc">Implementation of ISO 27001 compliant cybersecurity framework across all ministry systems and infrastructure.</p>
+                    <div class="tender-actions">
+                        <button class="tender-btn primary-btn" onclick="showTenderDetail('Cybersecurity Framework Implementation')">View Details</button>
+                        <button class="tender-btn secondary-btn">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" placeholder="What's your tender query?...">
+            <button class="send-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22 2L11 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Tender Detail Overlay -->
+    <div class="overlay" id="tenderDetailOverlay">
+        <div class="detail-container">
+            <div class="close-btn" onclick="closeTenderDetail()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            
+            <div class="detail-header">
+                <h2 class="detail-title" id="detailTitle">Tender Title</h2>
+                <div class="detail-meta">
+                    <div class="detail-meta-item">
+                        <div class="detail-meta-label">Reference No.</div>
+                        <div class="detail-meta-value" id="detailRef">REF-2023-001</div>
+                    </div>
+                    <div class="detail-meta-item">
+                        <div class="detail-meta-label">Budget</div>
+                        <div class="detail-meta-value" id="detailBudget">$45,000,000</div>
+                    </div>
+                    <div class="detail-meta-item">
+                        <div class="detail-meta-label">Closing Date</div>
+                        <div class="detail-meta-value" id="detailDeadline">15 August 2023</div>
+                    </div>
+                    <div class="detail-meta-item">
+                        <div class="detail-meta-label">Status</div>
+                        <div class="detail-meta-value" id="detailStatus">Open</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-content">
+                <div class="detail-section">
+                    <h3 class="detail-section-title">Description</h3>
+                    <p class="detail-section-content" id="detailDescription">
+                        Detailed description of the tender will appear here. This section provides comprehensive information about the project requirements, scope of work, and technical specifications.
+                    </p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3 class="detail-section-title">Requirements</h3>
+                    <p class="detail-section-content">
+                        - Minimum 10 years experience in similar projects<br>
+                        - ISO 9001 certification required<br>
+                        - Financial statements for last 3 years<br>
+                        - Detailed project plan with timelines<br>
+                        - List of key personnel with qualifications
+                    </p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3 class="detail-section-title">Evaluation Criteria</h3>
+                    <p class="detail-section-content">
+                        - Technical proposal: 60%<br>
+                        - Financial proposal: 30%<br>
+                        - Company experience: 10%<br>
+                        - Minimum technical score required: 75/100
+                    </p>
+                </div>
+            </div>
+            
+            <div class="user-details" id="userDetails">
+                <h3 class="user-details-title">Your Information</h3>
+                <div class="user-detail-row">
+                    <div class="user-detail-label">Name:</div>
+                    <div class="user-detail-value">John Doe</div>
+                </div>
+                <div class="user-detail-row">
+                    <div class="user-detail-label">Company:</div>
+                    <div class="user-detail-value">ABC Construction Ltd.</div>
+                </div>
+                <div class="user-detail-row">
+                    <div class="user-detail-label">Email:</div>
+                    <div class="user-detail-value">john.doe@abcconstruction.com</div>
+                </div>
+                <div class="user-detail-row">
+                    <div class="user-detail-label">Phone:</div>
+                    <div class="user-detail-value">+1 (555) 123-4567</div>
+                </div>
+            </div>
+            
+            <div class="detail-actions">
+                <button class="detail-btn apply-btn-large" onclick="showUserDetails()">Apply Now</button>
+                <button class="detail-btn save-btn-large">Save Tender</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get all category cards
+        const categoryCards = document.querySelectorAll('.card[data-category]');
+        
+        // Add click event to each card
+        categoryCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const category = this.getAttribute('data-category');
+                showTenders(category);
+            });
+        });
+        
+        // Function to show tenders for a specific category
+        function showTenders(category) {
+            // Hide all tender sections first
+            document.querySelectorAll('.tenders-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Hide the info cards grid
+            document.getElementById('infoCards').style.display = 'none';
+            
+            // Show the selected tender section
+            document.getElementById(`${category}Tenders`).style.display = 'block';
+        }
+        
+        // Function to show the info cards again
+        function showInfoCards() {
+            // Hide all tender sections
+            document.querySelectorAll('.tenders-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Show the info cards grid
+            document.getElementById('infoCards').style.display = 'grid';
+        }
+        
+        // Function to show tender details
+        function showTenderDetail(title) {
+            const overlay = document.getElementById('tenderDetailOverlay');
+            const detailTitle = document.getElementById('detailTitle');
+            const detailDescription = document.getElementById('detailDescription');
+            
+            // Set tender details based on title
+            detailTitle.textContent = title;
+            
+            if (title === 'New Hospital Construction - Phase 2') {
+                document.getElementById('detailBudget').textContent = '$45,000,000';
+                document.getElementById('detailDeadline').textContent = '15 August 2023';
+                document.getElementById('detailStatus').textContent = 'Open';
+                document.getElementById('detailRef').textContent = 'REF-2023-001';
+                detailDescription.textContent = 'Construction of a new 200-bed hospital facility including all civil works, MEP installations, and finishing works. The project includes site preparation, structural work, architectural finishes, medical gas systems, HVAC, electrical systems, and landscaping. Bidders must have experience in healthcare facility construction.';
+            } else if (title === 'Highway Expansion Project') {
+                document.getElementById('detailBudget').textContent = '$120,000,000';
+                document.getElementById('detailDeadline').textContent = '22 September 2023';
+                document.getElementById('detailStatus').textContent = 'Open';
+                document.getElementById('detailRef').textContent = 'REF-2023-002';
+                detailDescription.textContent = 'Expansion of a 25km highway section from 4 to 6 lanes, including construction of 3 new bridges and 2 interchanges. The project requires environmental impact mitigation measures and traffic management planning. Prequalification documents must be submitted by August 1st.';
+            } else if (title === 'Enterprise Cloud Migration') {
+                document.getElementById('detailBudget').textContent = '$8,500,000';
+                document.getElementById('detailDeadline').textContent = '05 September 2023';
+                document.getElementById('detailStatus').textContent = 'Open';
+                document.getElementById('detailRef').textContent = 'REF-2023-003';
+                detailDescription.textContent = 'Migration of core banking systems from on-premise infrastructure to cloud environment with 24/7 support requirements. The project includes data migration, application re-platforming, and implementation of disaster recovery solutions. Vendor must be certified by major cloud providers.';
+            } else if (title === 'Cybersecurity Framework Implementation') {
+                document.getElementById('detailBudget').textContent = '$3,200,000';
+                document.getElementById('detailDeadline').textContent = '18 August 2023';
+                document.getElementById('detailStatus').textContent = 'Open';
+                document.getElementById('detailRef').textContent = 'REF-2023-004';
+                detailDescription.textContent = 'Implementation of ISO 27001 compliant cybersecurity framework across all ministry systems and infrastructure. The project includes risk assessment, policy development, security controls implementation, staff training, and audit preparation. Vendor must have government security clearance.';
+            }
+            
+            // Hide user details section
+            document.getElementById('userDetails').style.display = 'none';
+            
+            // Show the overlay
+            overlay.style.display = 'flex';
+        }
+        
+        // Function to close tender detail view
+        function closeTenderDetail() {
+            document.getElementById('tenderDetailOverlay').style.display = 'none';
+        }
+        
+        // Function to show user details
+        function showUserDetails() {
+            document.getElementById('userDetails').style.display = 'block';
+        }
+        
+        // Close overlay when clicking outside the container
+        document.getElementById('tenderDetailOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeTenderDetail();
+            }
+        });
+    </script>
+</body>
+</html>

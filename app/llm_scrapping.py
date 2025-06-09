@@ -9,6 +9,7 @@ def find_tenders(prompt: str):
         query=f"{prompt}",
         search_depth="advanced",
         max_results=20,
+        
 
     )
     return response
