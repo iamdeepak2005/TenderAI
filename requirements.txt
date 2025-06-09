@@ -2,5 +2,16 @@ tavily-python
 fastapi
 uvicorn
 pydantic
+pypdf
+PyPDF2
+langchain
+langchain-community
+langchain-core
+chromadb
+sentence-transformers
+openai
+deepseek  # if using the DeepSeek client
+tiktoken
 selenium
 serpapi
+requests0
