@@ -9,16 +9,26 @@ from typing import List, Dict
 from langchain_community.embeddings import SentenceTransformerEmbeddings
 
 SECTION_EXTRACTION_PROMPT = """
-You are given the full content of a document below.
+Analyze the following document content and identify all main section headings. Follow these guidelines:
 
-Identify the main **sections** in this document based on content. 
-Return a list of section **titles** only — no summaries, just titles. 
-Ignore repeated headers like page numbers or footers.
+1. Extract ALL distinct section titles in the order they appear
+2. Include both top-level and sub-section headings
+3. Ignore page numbers, footers, headers, and repeating elements
+4. Return ONLY the section titles in a clean markdown list format
+5. Preserve the exact wording and capitalization of each title
+6. Include section numbers if they exist in the document
 
-Document:
+Format your response like this:
+- Section Title 1
+- Section Title 2
+- Subsection A
+- Subsection B
+- Section Title 3
+
+Document Content:
 {content}
 
-List the section titles:
+List of all section titles:
 """
 
 # Prompts
@@ -54,7 +64,7 @@ RAW_TEXTS: List[str] = []
 
 # Keywords to classify questions
 SUMMARY_KEYWORDS = ["summary", "overview", "brief", "highlights"]
-DETAIL_KEYWORDS = ["explain", "elaborate", "details", "section", "clause", "content", "in-depth"]
+DETAIL_KEYWORDS = ["clause", "article", "chapter", "specific", "explain", "elaborate", "in detail"]
 
 # ------------------------
 # 📄 Load & Process Documents
@@ -84,7 +94,8 @@ def process_documents(filepaths: List[str]):
     embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
     vectordb = Chroma.from_documents(chunks, embeddings, persist_directory=CHROMA_PATH)
     vectordb.persist()
-
+    print(f"✅ Processed {len(docs)} pages from {len(filepaths)} files into vector store.")
+    print(RAW_TEXTS[:50])  # Show first 2 texts for debugging
 
 # -------------------------------
 # 🤖 Query Classification Helpers
@@ -95,6 +106,7 @@ def is_summary_question(question: str) -> bool:
 def is_detail_question(question: str) -> bool:
     return any(word in question.lower() for word in DETAIL_KEYWORDS)
 
+
 # -------------------------
 # 🤖 Main Query Handler
 # -------------------------
@@ -102,9 +114,10 @@ def query_rag(question: str) -> str:
     if is_summary_question(question):
         return ask_summary(question)
     elif is_detail_question(question):
-        return ask_detail(question)
+        return "".join(ask_detail(question))  # Collect generator output
     else:
         return ask_general(question)
+
 
 # ----------------------
 # ✨ General Query Flow
@@ -132,10 +145,13 @@ def ask_detail(question: str):
 
 
 def ask_general(question: str) -> str:
-    vectordb = Chroma(persist_directory=CHROMA_PATH, embedding_function=OpenAIEmbeddings())
+    embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")    
+    vectordb = Chroma(persist_directory=CHROMA_PATH, embedding_function=embeddings)
     results = vectordb.similarity_search(question, k=3)
+    
     context = "\n".join([doc.page_content for doc in results])
     prompt = GENERAL_PROMPT.format(context=context, question=question)
+    
     return query_llm(prompt)
 
 # --------------------------
@@ -148,23 +164,30 @@ def preprocess_text(text: str) -> str:
     text = re.sub(r"[^A-Za-z0-9,.:%() \n\-]", "", text)
     return text.strip()
 
+
+def check_vectordb():
+    embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
+    vectordb = Chroma(persist_directory=CHROMA_PATH, embedding_function=embeddings)
+    results = vectordb.similarity_search("tender", k=1)
+    print("✅ Vector DB working. Retrieved:\n", results[0].page_content if results else "Nothing found")
 # --------------------------
 # 🔎 Extract Document Sections
 # --------------------------
 def extract_sections_via_llm(raw_texts: List[str]) -> Dict[str, str]:
     full_text = "\n".join(raw_texts)
+    check_vectordb()
     
-    # Step 1: Ask the LLM what sections exist
-    prompt = SECTION_EXTRACTION_PROMPT.format(content=full_text[:3000])  # limit to avoid token overload
+    # ✅ Feed the full document instead of slicing
+    prompt = SECTION_EXTRACTION_PROMPT.format(content=full_text)
     section_titles_raw = query_llm(prompt)
-    
-    # Step 2: Extract and split titles from response
+    print(section_titles_raw)
+
+    # Step 2: Extract and clean titles
     section_titles = [line.strip("-•* \n") for line in section_titles_raw.strip().split("\n") if line.strip()]
 
-    # Step 3: Match content under each section
+    # Step 3: Extract sections based on detected titles
     sections = {}
     for title in section_titles:
-        # Find title in text and extract everything until the next one
         match = re.search(re.escape(title), full_text, re.IGNORECASE)
         if not match:
             continue
@@ -181,4 +204,3 @@ def extract_sections_via_llm(raw_texts: List[str]) -> Dict[str, str]:
         sections[title] = content
 
     return sections
-

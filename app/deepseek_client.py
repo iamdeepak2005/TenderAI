@@ -1,6 +1,6 @@
 import requests
 import os
-API_KEY = "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"  # 🔐 Replace this!
+API_KEY = "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"  # 🔐 Replace this!
 
 ENDPOINT = "https://openrouter.ai/api/v1/chat/completions"
 

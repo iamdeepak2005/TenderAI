@@ -41,3 +41,5 @@ if st.button("Ask") and query:
 for q, a_chunks in reversed(st.session_state.chat_history):
     st.markdown(f"**You:** {q}")
     st.markdown(f"**Bot:**\n\n" + "\n".join(a_chunks))
+
+

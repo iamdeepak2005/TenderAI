@@ -13,8 +13,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import shutil
 from rag_utils import *
 from fastapi.responses import StreamingResponse
-from typing import AsyncGenerator
-import asyncio
+from fastapi.responses import PlainTextResponse
+
 class PromptRequest(BaseModel):
     prompt: str
 
@@ -69,12 +69,14 @@ async def upload_docs(files: list[UploadFile]):
 
 @app.post("/ask/")
 async def ask_question(question: str = Form(...)):
-    def generate():
-        for section_response in ask_detail(question):
-            yield section_response
-    return StreamingResponse(generate(), media_type="text/plain")
+    if is_detail_question(question):
+        def generate():
+            for section_response in ask_detail(question):
+                yield section_response
+        return StreamingResponse(generate(), media_type="text/plain")
+    else:
+        answer = query_rag(question)
+        return PlainTextResponse(answer)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
-
-
