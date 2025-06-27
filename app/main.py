@@ -2,13 +2,12 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import ask, documents, scrape
+from app.routes import ask, documents, scrape,download
 import sys
 import os
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 os.environ["OMP_NUM_THREADS"] = "1"
-
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 app = FastAPI(
@@ -31,6 +30,7 @@ app.add_middleware(
 app.include_router(ask.router, prefix="")
 app.include_router(documents.router, prefix="")
 app.include_router(scrape.router, prefix="")
+app.include_router(download.router, prefix="")
 
 # Test route
 @app.get("/start")

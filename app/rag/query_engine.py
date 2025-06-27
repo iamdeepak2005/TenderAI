@@ -1,9 +1,9 @@
 import os
 from langchain.prompts import PromptTemplate
 from app.agents.agent_initializer import get_llm
-from .query_classifier import is_summary_question, is_detail_question
+# from .query_classifier import is_summary_question, is_detail_question
 from .vector_store import get_vectordb
-from langchain.chains import  RetrievalQA
+# from langchain.chains import  RetrievalQA
 from langchain.chains.llm import LLMChain
 from langchain_huggingface import HuggingFaceEmbeddings
 from ..prompts.general_prompt import GENERAL_PROMPT
@@ -27,7 +27,9 @@ llm = get_llm()
 #     return titles
 
 def ask_summary(question: str) -> str:
+    print(question,"in summary function")
     text = "\n".join(get_raw_texts())
+    print(text,"in summary function")
     prompt = SUMMARY_PROMPT.format(text=text)
     
     return llm.invoke(prompt).content
